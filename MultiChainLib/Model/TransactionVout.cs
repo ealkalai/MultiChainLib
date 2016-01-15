@@ -19,14 +19,14 @@ namespace MultiChainLib
         public ScriptPubKeyResponse ScriptPubKey { get; set; }
 
         [JsonProperty("assets")]
-        public List<object> Assets { get; set; }
+        public List<AssetVout> Assets { get; set; }
 
         [JsonProperty("permissions")]
         public List<PermissionsResponse> Permissions { get; set; }
 
         public TransactionVout()
         {
-            this.Assets = new List<object>();
+            this.Assets = new List<AssetVout>();
             this.Permissions = new List<PermissionsResponse>();
         }
     }

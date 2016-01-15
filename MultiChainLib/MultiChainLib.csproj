@@ -54,6 +54,7 @@
     <Compile Include="Model\AddressGroupingResponse.cs" />
     <Compile Include="Model\AddressResponse.cs" />
     <Compile Include="Model\AssetBalanceResponse.cs" />
+    <Compile Include="Model\AssetVout.cs" />
     <Compile Include="Model\AssetResponse.cs" />
     <Compile Include="Model\BlockchainInfoResponse.cs" />
     <Compile Include="Model\BlockResponse.cs" />
