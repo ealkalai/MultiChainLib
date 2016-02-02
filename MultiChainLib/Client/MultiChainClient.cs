@@ -398,10 +398,10 @@ namespace MultiChainLib
             return this.ExecuteAsync<string>("createrawtransaction", 0, txids, dictionary);            
         }
 
-        // not implemented -- contact us with specific implementation requirements and we'll implement this...
-        public Task<JsonRpcResponse<string>> SendRawTransactionAsync()
+        
+        public Task<JsonRpcResponse<string>> SendRawTransactionAsync(string hex)
         {
-            throw new NotImplementedException("This operation has not been implemented.");
+            return this.ExecuteAsync<string>("sendrawtransaction", 0, hex);
         }
 
         
