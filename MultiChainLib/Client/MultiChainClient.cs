@@ -61,7 +61,6 @@ namespace MultiChainLib
         {
             var theAmount = new Dictionary<string, object>();
             theAmount[assetName] = amount;
-            return this.ExecuteAsync<string>("sendtoaddress", 0, address, theAmount, comment ?? string.Empty, 
             return this.ExecuteAsync<string>("sendtoaddress", 0, address, theAmount, comment ?? string.Empty,
                 commentTo ?? string.Empty);
         }
@@ -214,7 +213,7 @@ namespace MultiChainLib
                 commentTo ?? string.Empty, startBlock, endBlock);*/
         }
 
-        public Task<JsonRpcResponse<string>> GrantFromAsync(string fromAddress, IEnumerable<string> toAddresses, BlockchainPermissions permissions, decimal nativeAmount = 0M, 
+        public Task<JsonRpcResponse<string>> GrantFromAsync(string fromAddress, IEnumerable<string> toAddresses, BlockchainPermissions permissions, decimal nativeAmount = 0M,
             string comment = null, string commentTo = null, int startBlock = 0, int endBlock = 0)
         {
             var stringifiedAddresses = this.StringifyValues(toAddresses);
@@ -383,10 +382,20 @@ namespace MultiChainLib
             return this.ExecuteAsync<bool>("verifychain", 0, (int)type, numBlocks);
         }
 
-        // not implemented -- contact us with specific implementation requirements and we'll implement this...
-        public Task<JsonRpcResponse<string>> CreateRawTransactionAync()
+        public Task<JsonRpcResponse<string>> CreateRawTransactionAync(IEnumerable<CreateRawTransactionTxIn> txids = null, IEnumerable<CreateRawTransactionAmount> assets = null)
         {
-            throw new NotImplementedException("This operation has not been implemented.");
+            string amountstr = string.Empty;
+            dynamic flexible;
+            flexible = new System.Dynamic.ExpandoObject();
+            var dictionary = (IDictionary<string, object>)flexible;
+            if (assets != null)
+            {
+                foreach (var asset in assets)
+                {
+                    dictionary.Add(asset.Address, asset.StringifyAmount());
+                }
+            }
+            return this.ExecuteAsync<string>("createrawtransaction", 0, txids, dictionary);
         }
 
         // not implemented -- contact us with specific implementation requirements and we'll implement this...

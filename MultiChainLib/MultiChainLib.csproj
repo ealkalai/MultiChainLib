@@ -59,6 +59,8 @@
     <Compile Include="Model\BlockchainInfoResponse.cs" />
     <Compile Include="Model\BlockResponse.cs" />
     <Compile Include="Model\ChainTipResponse.cs" />
+    <Compile Include="Model\CreateRawTransactionAmount.cs" />
+    <Compile Include="Model\CreateRawTransactionTxIn.cs" />
     <Compile Include="Model\GetInfoResponse.cs" />
     <Compile Include="Model\GetServerInfoResponse.cs" />
     <Compile Include="Model\GetTransactionResponse.cs" />
