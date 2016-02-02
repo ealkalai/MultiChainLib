@@ -389,13 +389,13 @@ namespace MultiChainLib
             flexible = new System.Dynamic.ExpandoObject();
             var dictionary = (IDictionary<string, object>)flexible;
             if (assets != null)
-            {
+            {                               
                 foreach (var asset in assets)
-                {
+                {                    
                     dictionary.Add(asset.Address, asset.StringifyAmount());
-                }
+                }                
             }
-            return this.ExecuteAsync<string>("createrawtransaction", 0, txids, dictionary);
+            return this.ExecuteAsync<string>("createrawtransaction", 0, txids, dictionary);            
         }
 
         // not implemented -- contact us with specific implementation requirements and we'll implement this...
@@ -404,10 +404,10 @@ namespace MultiChainLib
             throw new NotImplementedException("This operation has not been implemented.");
         }
 
-        // not implemented -- contact us with specific implementation requirements and we'll implement this...
-        public Task<JsonRpcResponse<string>> SignRawTransactionAsync()
+        
+        public Task<JsonRpcResponse<SignRawTransactionResponse>> SignRawTransactionAsync(string hex)
         {
-            throw new NotImplementedException("This operation has not been implemented.");
+            return this.ExecuteAsync<SignRawTransactionResponse>("signrawtransaction", 0, hex);
         }
 
         public Task<JsonRpcResponse<bool>> PrioritiseTransactionAsync(string txId, decimal priority, int feeSatoshis)
