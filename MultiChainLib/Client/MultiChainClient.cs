@@ -62,6 +62,7 @@ namespace MultiChainLib
             var theAmount = new Dictionary<string, object>();
             theAmount[assetName] = amount;
             return this.ExecuteAsync<string>("sendtoaddress", 0, address, theAmount, comment ?? string.Empty, 
+            return this.ExecuteAsync<string>("sendtoaddress", 0, address, theAmount, comment ?? string.Empty,
                 commentTo ?? string.Empty);
         }
 
@@ -72,7 +73,7 @@ namespace MultiChainLib
             return this.ExecuteAsync<string>("sendwithmetadatafrom", 0, fromAddress, toAddress, theAmount, FormatHex(dataHex));
         }
 
-        public Task<JsonRpcResponse<string>> SendAssetToAddressAsync(string address, string assetName, decimal quantity, 
+        public Task<JsonRpcResponse<string>> SendAssetToAddressAsync(string address, string assetName, decimal quantity,
             int nativeAmount = 0, string comment = null, string commentTo = null)
         {
             return this.ExecuteAsync<string>("sendassettoaddress", 0, address, assetName, quantity, nativeAmount,
@@ -176,7 +177,7 @@ namespace MultiChainLib
             return this.ExecuteAsync<List<ListPermissionsResponse>>("listpermissions", 0, permissionsAsString);
         }
 
-        public Task<JsonRpcResponse<string>> IssueAsync(string issueAddress, string assetName, int quantity, decimal units, 
+        public Task<JsonRpcResponse<string>> IssueAsync(string issueAddress, string assetName, int quantity, decimal units,
             decimal nativeAmount = 0, string comment = null, string commentTo = null, int startBlock = 0, int endBlock = 0)
         {
             return this.ExecuteAsync<string>("issue", 0, issueAddress, assetName, quantity, units); /*, nativeAmount, comment,
@@ -517,7 +518,20 @@ namespace MultiChainLib
 
         public Task<JsonRpcResponse<List<UnspentResponse>>> ListUnspentAsync(int minConf = 1, int maxConf = 999999, IEnumerable<string> addresses = null)
         {
-            return this.ExecuteAsync<List<UnspentResponse>>("listunspent", 0, minConf, maxConf);
+            //multichain - cli testbc listunspent 1 999999[\"4Qk5zZJbJNRTjwVETGzyBbgCW5ePVt7j4vuXTc\"]
+
+            StringBuilder builder = new StringBuilder();
+            
+            foreach (var address in addresses)
+            {
+                if (builder.Length > 0)
+                    builder.Append(",");
+                builder.Append(address);
+            }
+            builder.Insert(0, "[");
+            builder.Append("]");
+            //return this.ExecuteAsync<List<UnspentResponse>>("listunspent", 0, minConf, maxConf,addresses!=null?builder.ToString():string.Empty);
+            return this.ExecuteAsync<List<UnspentResponse>>("listunspent", 0, minConf, maxConf, addresses ??null);
         }
 
         public Task<JsonRpcResponse<List<string>>> ListLockUnspentAsync()
