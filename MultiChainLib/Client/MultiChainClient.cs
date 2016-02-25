@@ -389,22 +389,22 @@ namespace MultiChainLib
             flexible = new System.Dynamic.ExpandoObject();
             var dictionary = (IDictionary<string, object>)flexible;
             if (assets != null)
-            {                               
+            {
                 foreach (var asset in assets)
-                {                    
+                {
                     dictionary.Add(asset.Address, asset.StringifyAmount());
-                }                
+                }
             }
-            return this.ExecuteAsync<string>("createrawtransaction", 0, txids, dictionary);            
+            return this.ExecuteAsync<string>("createrawtransaction", 0, txids, dictionary);
         }
 
-        
+
         public Task<JsonRpcResponse<string>> SendRawTransactionAsync(string hex)
         {
             return this.ExecuteAsync<string>("sendrawtransaction", 0, hex);
         }
 
-        
+
         public Task<JsonRpcResponse<SignRawTransactionResponse>> SignRawTransactionAsync(string hex)
         {
             return this.ExecuteAsync<SignRawTransactionResponse>("signrawtransaction", 0, hex);
@@ -525,12 +525,60 @@ namespace MultiChainLib
             return this.ExecuteAsync<ListSinceLastBlockResponse>("listsinceblock", 0, hash, confirmations, watchOnly);
         }
 
+        public Task<JsonRpcResponse<CreateRawTransactionTxIn>> PrepareLockUnspent(string address = null, IEnumerable<PrepareLockUnspentAmount> amounts = null, bool _lock = true)
+        {
+            //multichain - cli testbc preparelockunspent '{"asset1":100,"asset2":20}' 
+
+            string amountstr = string.Empty;
+            dynamic flexible;
+            flexible = new System.Dynamic.ExpandoObject();
+            var dictionary = (IDictionary<string, object>)flexible;
+            if (amounts != null)
+            {
+                foreach (var amount in amounts)
+                {
+                    dictionary.Add(amount.Name, amount.Qty);
+                }
+            }
+            if (address == null)
+                return this.ExecuteAsync<CreateRawTransactionTxIn>("preparelockunspent", 0, dictionary, _lock);
+
+            return this.ExecuteAsync<CreateRawTransactionTxIn>("preparelockunspentfrom", 0, address, dictionary, _lock);
+        }
+
+
+        public Task<JsonRpcResponse<CreateRawTransactionTxIn>> PrepareLockUnspent(IEnumerable<PrepareLockUnspentAmount> amounts = null, bool _lock = true)
+        {
+            //multichain - cli testbc preparelockunspent '{"asset1":100,"asset2":20}' 
+
+            string amountstr = string.Empty;
+            dynamic flexible;
+            flexible = new System.Dynamic.ExpandoObject();
+            var dictionary = (IDictionary<string, object>)flexible;
+            if (amounts != null)
+            {
+                foreach (var amount in amounts)
+                {
+                    dictionary.Add(amount.Name, amount.Qty);
+                }
+            }
+
+            return this.ExecuteAsync<CreateRawTransactionTxIn>("preparelockunspent", 0, dictionary, _lock);
+        }
+
+        public Task<JsonRpcResponse<bool>> LockUnspent(bool unlock, IEnumerable<CreateRawTransactionTxIn> unspentTxs = null)
+        {
+
+
+            return this.ExecuteAsync<bool>("lockunspent", 0, unlock, unspentTxs);
+        }
+
         public Task<JsonRpcResponse<List<UnspentResponse>>> ListUnspentAsync(int minConf = 1, int maxConf = 999999, IEnumerable<string> addresses = null)
         {
             //multichain - cli testbc listunspent 1 999999[\"4Qk5zZJbJNRTjwVETGzyBbgCW5ePVt7j4vuXTc\"]
 
             StringBuilder builder = new StringBuilder();
-            
+
             foreach (var address in addresses)
             {
                 if (builder.Length > 0)
@@ -540,12 +588,12 @@ namespace MultiChainLib
             builder.Insert(0, "[");
             builder.Append("]");
             //return this.ExecuteAsync<List<UnspentResponse>>("listunspent", 0, minConf, maxConf,addresses!=null?builder.ToString():string.Empty);
-            return this.ExecuteAsync<List<UnspentResponse>>("listunspent", 0, minConf, maxConf, addresses ??null);
+            return this.ExecuteAsync<List<UnspentResponse>>("listunspent", 0, minConf, maxConf, addresses ?? null);
         }
 
-        public Task<JsonRpcResponse<List<string>>> ListLockUnspentAsync()
+        public Task<JsonRpcResponse<List<UnspentResponse>>> ListLockUnspentAsync()
         {
-            return this.ExecuteAsync<List<string>>("listlockunspent", 0);
+            return this.ExecuteAsync<List<UnspentResponse>>("listlockunspent", 0);
         }
 
         public Task<JsonRpcResponse<List<string>>> GetAddressesAsync()
